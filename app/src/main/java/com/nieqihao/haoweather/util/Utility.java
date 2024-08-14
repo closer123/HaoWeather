@@ -2,6 +2,7 @@ package com.nieqihao.haoweather.util;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -9,9 +10,27 @@ import com.google.gson.JsonParser;
 import com.nieqihao.haoweather.db.City;
 import com.nieqihao.haoweather.db.County;
 import com.nieqihao.haoweather.db.Province;
+import com.nieqihao.haoweather.gson.Weather;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class Utility {
+
+    public static Weather handleWeatherResponse(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent, Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static boolean handleProvinceResponse(String response) {
         if (!TextUtils.isEmpty(response)) {
             JsonParser parser = new JsonParser();
